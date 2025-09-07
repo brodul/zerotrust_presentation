@@ -34,6 +34,13 @@ jobs:
       - name: Build slides
         run: npx reveal-md zero_trust_aws_slides.md --static dist --css theme.css
 
+      - name: Debug - List dist folder contents
+        run: |
+          echo "Checking if dist folder exists and its contents:"
+          ls -la dist/
+          echo "Checking for index.html:"
+          ls -la dist/index.html || echo "index.html not found"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
