@@ -3,7 +3,7 @@
 
 ---
 
-## Slide 1: Zero Trust Foundation
+## Zero Trust Foundation
 **Traditional Security Model:**
 - Castle-and-moat approach
 - Trust internal network traffic
@@ -19,7 +19,7 @@
 
 ---
 
-## Slide 2: Implementation 1 - CI/CD Pipeline Security
+## Implementation 1 - CI/CD Pipeline Security
 **Problem:** Long-lived AWS keys in GitHub Secrets
 - Shared credentials across teams
 - Manual rotation nightmares
@@ -32,7 +32,7 @@
 
 ---
 
-## Slide 3: The Bad Practice - Long-Lived AWS Keys
+## The Bad Practice - Long-Lived AWS Keys
 **Common Anti-Pattern in GitHub Secrets:**
 ```yaml
 name: Deploy to AWS
@@ -59,7 +59,7 @@ jobs:
 
 ---
 
-## Slide 4: OIDC Implementation - AWS Setup
+## OIDC Implementation - AWS Setup
 **OIDC Identity Provider:**
 ```bash
 aws iam create-open-id-connect-provider \
@@ -84,7 +84,7 @@ aws iam create-open-id-connect-provider \
 
 ---
 
-## Slide 4: OIDC Implementation - GitHub Workflow
+## OIDC Implementation - GitHub Workflow
 ```yaml
 name: Deploy to AWS
 on:
@@ -111,7 +111,7 @@ jobs:
 
 ---
 
-## Slide 5: Implementation 2 - Network Access Control
+## Implementation 2 - Network Access Control
 **Problem:** Traditional VPN Limitations
 - Castle-and-moat security
 - Full network access once connected
@@ -126,7 +126,7 @@ jobs:
 
 ---
 
-## Slide 6: Cloudflare ZTNA Architecture
+## Cloudflare ZTNA Architecture
 **Components:**
 - **Cloudflare Access:** Authentication gateway
 - **Cloudflare Tunnel:** Secure outbound-only connections
@@ -145,7 +145,7 @@ cloudflared tunnel --config config.yml run
 
 ---
 
-## Slide 7: Advanced Access Policies
+## Advanced Access Policies
 **Identity-Based Controls:**
 ```yaml
 name: "Internal Application Access"
@@ -167,7 +167,7 @@ session_duration: "8h"
 
 ---
 
-## Slide 8: Delegation Framework
+## Delegation Framework
 **Team Ownership Model:**
 
 **Platform Team:**
@@ -187,7 +187,7 @@ session_duration: "8h"
 
 ---
 
-## Slide 9: Self-Service Implementation
+## Self-Service Implementation
 **Terraform Modules for Standardization:**
 ```hcl
 # OIDC for CI/CD
@@ -209,7 +209,7 @@ module "app_access" {
 
 ---
 
-## Slide 10: Monitoring & Compliance
+## Monitoring & Compliance
 **Unified Visibility:**
 - **CloudTrail:** All AWS role assumptions
 - **Cloudflare Analytics:** Application access patterns
@@ -225,7 +225,7 @@ module "app_access" {
 
 ---
 
-## Slide 11: Implementation Challenges & Solutions
+## Implementation Challenges & Solutions
 **Challenge 1:** Complex policy syntax across platforms
 - **Solution:** Standardized Terraform modules with validation
 
@@ -240,7 +240,7 @@ module "app_access" {
 
 ---
 
-## Slide 12: Results & Business Impact
+## Results & Business Impact
 **Security Improvements:**
 - ✅ Eliminated 100% of long-lived credentials
 - ✅ Reduced attack surface by 80%
@@ -258,7 +258,7 @@ module "app_access" {
 
 ---
 
-## Slide 13: Next Steps & Roadmap
+## Next Steps & Roadmap
 **Short Term (3 months):**
 - Expand to remaining 200+ repositories
 - Additional identity provider integrations
@@ -276,7 +276,7 @@ module "app_access" {
 
 ---
 
-## Slide 14: Questions & Discussion
+## Questions & Discussion
 **Key Takeaways:**
 1. Zero Trust requires identity verification at every step
 2. Short-lived credentials eliminate most credential theft risks
