@@ -10,7 +10,7 @@
   --r-main-font: 'Inter', sans-serif;
   --r-main-font-size: 24px;
   --r-main-color: #1e293b;
-  --r-block-margin: 20px;
+  --r-block-margin: 10px;
   --r-heading-margin: 0 0 20px 0;
   --r-heading-font: 'Inter', sans-serif;
   --r-heading-color: #0f172a;
@@ -120,22 +120,29 @@
 .reveal pre {
   background: linear-gradient(135deg, #0f172a, #1e293b);
   border-radius: 15px;
-  padding: 30px;
-  margin: 30px 0;
+  padding: 15px;
+  margin: 15px 0;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   position: relative;
-  overflow: hidden;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.reveal pre::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6);
-  border-radius: 15px 15px 0 0;
+.reveal pre::-webkit-scrollbar {
+  display: none !important;
+}
+
+.reveal pre::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.reveal pre::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+.reveal pre::-webkit-scrollbar-corner {
+  display: none !important;
 }
 
 .reveal pre code {
@@ -143,20 +150,20 @@
   border: none;
   color: #e2e8f0;
   padding: 0;
-  font-size: 0.8em;
+  font-size: 1em;
   line-height: 1.6;
-  margin-top: 20px;
+  margin-top: 0;
   display: block;
 }
 
 .reveal ul,
 .reveal ol {
-  margin: 30px 0;
+  margin: 5px 0;
 }
 
 .reveal ul li,
 .reveal ol li {
-  margin: 15px 0;
+  margin: 10px 0;
   position: relative;
   padding-left: 30px;
   list-style: none;
@@ -339,6 +346,34 @@
   padding: 5px 10px;
   border-radius: 50%;
   font-size: 1.2em;
+}
+
+/* Full-size slide for diagrams */
+.reveal .slides section.full-size {
+  width: 95vw;
+  height: 90vh;
+  margin: 20px auto;
+  padding: 30px;
+  max-width: none;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal .slides section.full-size pre {
+  font-size: 0.6em;
+  margin: 10px 0;
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.reveal .slides section.full-size pre code {
+  font-size: 1em;
+  line-height: 1.2;
+  margin-top: 0;
 }
 
 /* Logo positioning */

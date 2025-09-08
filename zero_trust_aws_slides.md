@@ -1,34 +1,33 @@
 # Zero Trust Security in Practice
-## 25-Minute Technical Presentation
+
+@brodul
 
 ---
 
 ## Zero Trust Foundation
-**Traditional Security Model:**
-- Castle-and-moat approach
-- Trust internal network traffic
-- Perimeter-based defenses
 
-**Zero Trust Principles:**
-- **Never trust, always verify**
-- **Least privilege access**
-- **Assume breach**
-- **Verify explicitly**
+**Traditional Security Model**
+- Castle-and-moat approach 
+- Long lived secrets
+
+Zero Trust Principles:
+- Never trust, always verify
+- Least privilege access
+- Assume breach
+- Verify explicitly
+
+---
 
 **Today's Focus:** Two practical implementations at scale
 
 ---
 
 ## Implementation 1 - CI/CD Pipeline Security
+
 **Problem:** Long-lived AWS keys in GitHub Secrets
 - Shared credentials across teams
 - Manual rotation nightmares
 - Full AWS access if compromised
-
-**Zero Trust Solution:** OpenID Connect (OIDC) Token Exchange
-- GitHub proves identity via short-lived tokens
-- AWS validates repository, branch, environment
-- No stored credentials anywhere
 
 ---
 
@@ -51,11 +50,76 @@ jobs:
       - run: aws s3 sync ./dist s3://my-bucket/
 ```
 
+- `ACCESS_KEY_ID` and `SECRET_KEY_ID` are used to authorize as a user
+- That user has a Role with policies attach to access different services
+
+---
+## The Bad Practice - Long-Lived AWS Keys
+
 **Why This Is Dangerous:**
 - Keys stored in GitHub Secrets across multiple repos
 - Same keys shared by entire team
 - No rotation strategy → keys live for months/years
 - **If compromised:** Full AWS account access with no audit trail
+
+---
+
+## Implementation 1 - CI/CD Pipeline Security
+
+**Zero Trust Solution:** OpenID Connect (OIDC) Token Exchange
+- GitHub proves identity via short-lived tokens
+- AWS validates repository, branch, environment
+- No stored credentials anywhere
+
+---
+
+```
+┌──────────────┐    1. Push Code    ┌──────────────┐
+│  Developer   │ ─────────────────► │ GitHub Repo  │
+└──────────────┘                    └──────────────┘
+                                            │
+                                            │ 2. Workflow Triggers
+                                            ▼
+                                   ┌──────────────┐
+                                   │GitHub Actions│
+                                   │   Workflow   │
+                                   └──────────────┘
+                                            │
+                                            │ 3. Request OIDC Token
+                                            ▼
+┌──────────────┐    4. JWT Token    ┌──────────────┐
+│ GitHub OIDC  │ ◄──────────────────│GitHub Actions│
+│  Provider    │ ───────────────────►│   Runner     │
+└──────────────┘   5. Signed Token  └──────────────┘
+                                            │
+                                            │ 6. AssumeRoleWithWebIdentity
+                                            ▼
+                                   ┌──────────────┐
+                                   │   AWS STS    │
+                                   └──────────────┘
+                                            │
+            7. Validate Token               │ 8. Return Temp Credentials
+            (repo, branch check)            │    (15 min TTL)
+            ┌──────────────┐                │
+            │   AWS IAM    │                │
+            │Trust Policy  │                │
+            └──────────────┘                ▼
+                                   ┌──────────────┐
+                                   │GitHub Actions│
+                                   │  with AWS    │
+                                   │ Credentials  │
+                                   └──────────────┘
+                                            │
+                                            │ 9. Deploy to AWS
+                                            ▼
+                                   ┌──────────────┐
+                                   │ AWS Services │
+                                   │(S3, Lambda,  │
+                                   │ ECS, etc.)   │
+                                   └──────────────┘
+```
+
+Notes: **Key:** No credentials stored • 15-min token TTL • Complete audit trail
 
 ---
 
@@ -75,8 +139,8 @@ aws iam create-open-id-connect-provider \
   "Action": "sts:AssumeRoleWithWebIdentity",
   "Condition": {
     "StringEquals": {
-      "token.actions.githubusercontent.com:repository": "my-org/my-repo",
-      "token.actions.githubusercontent.com:ref": "refs/heads/main"
+      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+      "token.actions.githubusercontent.com:sub": "repo:my-org/my-repo:*"
     }
   }
 }
@@ -187,28 +251,6 @@ session_duration: "8h"
 
 ---
 
-## Self-Service Implementation
-**Terraform Modules for Standardization:**
-```hcl
-# OIDC for CI/CD
-module "github_oidc_role" {
-  source = "internal/terraform-github-oidc"
-  repository_name = "my-service"
-  environments = ["prod", "staging"]
-}
-
-# Cloudflare Access for Applications
-module "app_access" {
-  source = "internal/terraform-cloudflare-access"
-  application_domain = "internal-app.company.com"
-  allowed_groups = ["developers", "qa-team"]
-}
-```
-
-**Benefits:** Consistent security, reduced manual work, faster onboarding
-
----
-
 ## Monitoring & Compliance
 **Unified Visibility:**
 - **CloudTrail:** All AWS role assumptions
@@ -222,57 +264,6 @@ module "app_access" {
 - Access pattern anomalies
 
 **Automated Alerting:** Suspicious activity, policy drift, compliance violations
-
----
-
-## Implementation Challenges & Solutions
-**Challenge 1:** Complex policy syntax across platforms
-- **Solution:** Standardized Terraform modules with validation
-
-**Challenge 2:** Emergency access scenarios
-- **Solution:** Break-glass procedures with elevated monitoring
-
-**Challenge 3:** Cross-account and multi-environment complexity
-- **Solution:** Template-based role patterns and automation
-
-**Challenge 4:** User experience and adoption
-- **Solution:** Transparent authentication, performance optimization
-
----
-
-## Results & Business Impact
-**Security Improvements:**
-- ✅ Eliminated 100% of long-lived credentials
-- ✅ Reduced attack surface by 80%
-- ✅ Complete audit trail for all access
-
-**Operational Benefits:**
-- ✅ 60% reduction in access-related tickets
-- ✅ Faster onboarding (days → hours)
-- ✅ Automated compliance reporting
-
-**Cost Savings:**
-- Reduced VPN infrastructure costs
-- Lower operational overhead
-- Improved developer productivity
-
----
-
-## Next Steps & Roadmap
-**Short Term (3 months):**
-- Expand to remaining 200+ repositories
-- Additional identity provider integrations
-- Mobile device management integration
-
-**Medium Term (6 months):**
-- Cross-cloud implementations (Azure, GCP)
-- API gateway Zero Trust integration
-- Advanced threat detection
-
-**Long Term (12 months):**
-- Continuous risk assessment
-- ML-based anomaly detection
-- Full software supply chain security
 
 ---
 
