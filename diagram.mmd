@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant Dev as Developer
+    participant GH as GitHub Repo
+    participant GA as GitHub Actions Runner
+    participant GHOIDC as GitHub OIDC Provider
+    participant STS as AWS STS
+    participant IAM as AWS IAM
+    participant AWS as AWS Services
+    
+    Dev->>+GH: 1. Push code to main branch
+    GH->>+GA: 2. Trigger workflow
+    GA->>+GHOIDC: 3. Request OIDC token
+    GHOIDC->>GA: 4. Return JWT token (repo, branch, sha)
+    GA->>+STS: 5. AssumeRoleWithWebIdentity(JWT)
+    STS->>+IAM: 6. Validate token & trust policy
+    Note over IAM: Check repo: org/repo:ref:refs/heads/main
+    IAM->>STS: 7. Token valid, role authorized  
+    STS->>GA: 8. Return temporary AWS credentials (15min TTL)
+    GA->>+AWS: 9. Deploy using temp credentials
+    AWS->>GA: 10. Deployment successful
+    GA->>GH: 11. Update workflow status
+    GH->>Dev: 12. Notify deployment complete

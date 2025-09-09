@@ -87,6 +87,15 @@
   border-radius: 20px;
 }
 
+.reveal .slides section[data-background] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 .reveal blockquote {
   background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
   border-left: 5px solid #3b82f6;

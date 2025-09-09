@@ -5,6 +5,7 @@
   "scripts": {
     "build": "reveal-md zero_trust_aws_slides.md --static dist --css theme.css",
     "serve": "reveal-md zero_trust_aws_slides.md --watch --css theme.css",
+    "render-diagram": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium || which google-chrome) mmdc -i diagram.mmd -o oidc-flow.png -w 1920 -H 1080 -b white",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "reveal-md": "^6.1.2"
+    "reveal-md": "^6.1.2",
+    "@mermaid-js/mermaid-cli": "^10.6.1"
   }
 }
