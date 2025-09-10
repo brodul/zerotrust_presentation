@@ -20,11 +20,16 @@
 
 ---
 
-**Today's Focus:** Two practical implementations at scale
+## Today's Focus
+- Two practical implementations
+- Spark interest
+- So you can look it up in detail 
 
 ---
-
 ## Implementation 1 - CI/CD Pipeline Security
+---
+
+## CI/CD Pipeline Security
 
 **Problem:** Long-lived AWS keys in GitHub Secrets
 
@@ -71,9 +76,31 @@ jobs:
 
 ---
 
-## Implementation 1 - CI/CD Pipeline Security
+## AWS Security token service
 
-**Zero Trust Solution:** OpenID Connect (OIDC) Token Exchange
+- Web service that issues temporary, limited-privilege credentials
+- Enables secure, time-bound access without long-term access keys
+- Common use cases: cross-account access and identity federation
+- Supports SAML and web identity providers (OIDC)
+- Provides short-term elevated privileges for specific operations
+- Credentials include: access key ID, secret access key, session token
+- Token duration: configurable from minutes to hours
+
+---
+<!-- .slide: data-background="aws_sts_diagram.png" data-background-size="contain" -->
+
+Notes:
+- You provide some proof who you are (SAML, OIDC ...) optionally which access you need
+- AWS STS validates that your proof is correct
+- Once you are identified it checks if you are Authorized to "Assume a role" (trust policy)
+- If you are then you get a shortlived access key ID, secret access key, and session token
+- Role has permissions/policies attached on what you can do (create object on S3)
+
+---
+
+## Zero Trust Solution - CI/CD Pipeline Security
+
+OpenID Connect (OIDC) Token Exchange
 
 - GitHub proves identity via short-lived tokens
 - AWS validates repository, branch, environment
@@ -85,17 +112,9 @@ jobs:
 
 ---
 
-## OIDC Implementation - AWS Setup
+## OIDC Implementation - AWS IAM Role
 
-**OIDC Identity Provider:**
-
-```bash
-aws iam create-open-id-connect-provider \
-  --url https://token.actions.githubusercontent.com \
-  --client-id-list sts.amazonaws.com
-```
-
-**IAM Role Trust Policy:**
+**GitHubActions TRUST Policy (who can assume a role) :**
 
 ```json
 {
@@ -112,6 +131,30 @@ aws iam create-open-id-connect-provider \
   }
 }
 ```
+
+---
+
+**GitHubActions Policy (what can be done with the role)**
+
+```json
+...
+"Statement": [
+  {
+    "Sid": "AllowS3SyncToBucket",
+    "Effect": "Allow",
+    "Action": [
+      "s3:PutObject",
+      "s3:GetObject", 
+      "s3:DeleteObject",
+      "s3:ListBucket"
+    ],
+    "Resource": [
+      "arn:aws:s3:::my-bucket",
+      "arn:aws:s3:::my-bucket/*"
+    ]
+  }
+]
+``` 
 
 ---
 
@@ -133,9 +176,8 @@ jobs:
     steps:
       - uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::123456789012:role/GitHubActions-Role
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActions
           aws-region: us-east-1
-
       - run: aws s3 sync ./dist s3://my-bucket/
 ```
 
@@ -145,14 +187,17 @@ jobs:
 
 ## Implementation 2 - Network Access Control
 
+---
+
+## Network Access Control
+
 **Problem:** Traditional VPN Limitations
 
 - Castle-and-moat security
 - Full network access once connected
-- Performance bottlenecks
 - Complex client management
 
-**Zero Trust Solution:** Cloudflare Zero Trust Network Access
+**Zero Trust Solution:** 
 
 - Application-level access control
 - Identity-based authentication
@@ -160,110 +205,51 @@ jobs:
 
 ---
 
-## Cloudflare ZTNA Architecture
+## Cloudflare ZTNA  
 
-**Components:**
-
-- **Cloudflare Access:** Authentication gateway
-- **Cloudflare Tunnel:** Secure outbound-only connections
-- **Identity Providers:** SSO integration
-
-**Access Flow:**
-
-```
-User → Cloudflare Access → Identity Provider → Policy Check → Application
-```
-
-**Cloudflare Tunnel Setup:**
-
-```bash
-cloudflared tunnel create my-app-tunnel
-cloudflared tunnel --config config.yml run
-```
+- Free for 50 seats
+- Relatively simple 
+- No need for real identity provider to start
 
 ---
 
-## Advanced Access Policies
-
-**Identity-Based Controls:**
-
-```yaml
-name: "Internal Application Access"
-decision: "allow"
-includes:
-  - email_domain: "company.com"
-  - group: "developers"
-requires:
-  - authentication_method: "mfa"
-  - country: ["US", "CA"]
-session_duration: "8h"
-```
-
-**Device Trust Integration:**
-
-- OS version requirements
-- Disk encryption verification
-- Firewall status checks
-- Certificate-based device identity
+## I am not affiliated with CloudFlare 
 
 ---
 
-## Delegation Framework
-
-**Team Ownership Model:**
-
-**Platform Team:**
-
-- OIDC provider setup and templates
-- Cloudflare tenant configuration
-- Monitoring and alerting infrastructure
-
-**Product Teams:**
-
-- Repository-specific IAM roles
-- Application access policies
-- Deployment workflows
-
-**Security Team:**
-
-- Policy templates and compliance
-- Audit trails and reviews
-- Emergency access procedures
+<!-- .slide: data-background="cf.svg" data-background-size="contain" -->
 
 ---
 
-## Monitoring & Compliance
-
-**Unified Visibility:**
-
-- **CloudTrail:** All AWS role assumptions
-- **Cloudflare Analytics:** Application access patterns
-- **GitHub Audit:** Workflow execution logs
-
-**Key Metrics:**
-
-- Credential usage by team/repository
-- Failed authentication attempts
-- Policy violations and exceptions
-- Access pattern anomalies
-
-**Automated Alerting:** Suspicious activity, policy drift, compliance violations
+<!-- .slide: data-background="cloudflare-ztna.png" data-background-size="contain" -->
 
 ---
 
-## Questions & Discussion
 
-**Key Takeaways:**
+<!-- .slide: data-background="cloudflare-ztna-otp.png" data-background-size="contain" -->
 
-1. Zero Trust requires identity verification at every step
-2. Short-lived credentials eliminate most credential theft risks
-3. Proper delegation enables teams to move fast securely
-4. Automation and templates ensure consistent security
+---
 
-**Discussion Topics:**
+<!-- .slide: data-background="tunnels.png" data-background-size="contain" -->
 
-- Implementation challenges in your environment
-- Integration with existing identity systems
-- Scaling considerations for large organizations
+---
 
-**Questions?**
+<!-- .slide: data-background="hostnames.png" data-background-size="contain" -->
+
+---
+
+<!-- .slide: data-background="app1.png" data-background-size="contain" -->
+
+---
+
+<!-- .slide: data-background="app2.png" data-background-size="contain" -->
+
+---
+
+## Key Takeaways
+
+- Zero Trust requires identity verification at every step
+- Short-lived credentials eliminate most credential theft risks
+- Proper delegation enables teams to move fast securely
+- Automation and templates ensure consistent security
+

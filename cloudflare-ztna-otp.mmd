@@ -1,0 +1,26 @@
+graph LR
+    A[User Browser] --> B[Cloudflare Access]
+    B --> C{Authenticated?}
+    C -->|No| D[Enter Email Address]
+    D --> E[Cloudflare Sends OTP<br/>via Email]
+    E --> F[User Receives Email<br/>with One-Time Code]
+    F --> G[User Enters OTP Code]
+    G --> H[Cloudflare Validates OTP]
+    H --> I{OTP Valid?}
+    I -->|No| J[Access Denied<br/>Invalid/Expired Code]
+    I -->|Yes| K[Authentication Success]
+    K --> B
+    C -->|Yes| L[Policy Engine]
+    L --> M{Policy Check}
+    M -->|Allow| N[Cloudflare Tunnel]
+    M -->|Deny| O[Access Denied]
+    N --> P[Private Application<br/>Never exposed to internet]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style E fill:#fff8e1
+    style F fill:#fff8e1
+    style L fill:#fff3e0
+    style P fill:#e8f5e8
+    style J fill:#ffebee
+    style O fill:#ffebee

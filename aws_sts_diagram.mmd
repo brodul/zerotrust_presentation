@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant User as User/Application
+    participant IdP as Identity Provider<br/>(SAML/OIDC)
+    participant STS as AWS STS
+    participant IAM as AWS IAM
+    participant AWS as AWS Services
+
+    User->>IdP: 1. Authenticate with credentials
+    IdP->>User: 2. Return identity token/assertion<br/>(SAML assertion or OIDC token)
+    
+    User->>STS: 3. AssumeRoleWithSAML/AssumeRoleWithWebIdentity<br/>+ Identity token + Role ARN
+    
+    STS->>IdP: 4. Validate token/assertion
+    IdP->>STS: 5. Confirm token validity
+    
+    STS->>IAM: 6. Check trust policy on target role<br/>Can this identity assume this role?
+    IAM->>STS: 7. Trust policy evaluation result
+    
+    alt Trust policy allows assumption
+        STS->>User: 8. Return temporary credentials<br/>• Access Key ID<br/>• Secret Access Key<br/>• Session Token<br/>• Expiration time
+        
+        User->>AWS: 9. Make API calls with temporary credentials
+        AWS->>IAM: 10. Check role permissions/policies<br/>for requested action
+        IAM->>AWS: 11. Permission evaluation result
+        
+        AWS->>User: 12. Return successful response
+    end

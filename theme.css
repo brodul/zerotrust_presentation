@@ -390,16 +390,61 @@
   content: '';
   position: fixed;
   bottom: 20px;
-  left: -100px;
-  width: 80px;
-  height: 80px;
+  left: -160px;
+  width: 160px;
+  height: 160px;
   background: url('./logo.png') no-repeat center center;
   background-size: contain;
   z-index: 1000;
-  opacity: 0.2;
-  transition: opacity 0.3s ease;
+  opacity: 1;
+  transition: opacity .5s ease;
+}
+
+/* Hide logo on slides with full-size background images */
+.reveal.has-dark-background .slides::after,
+.reveal .slide-background[data-background]::after {
+  opacity: 0 !important;
+}
+
+/* Alternative: hide logo when current slide has background */
+body:has(.present[data-background]) .reveal .slides::after {
+  opacity: 0 !important;
 }
 
 .reveal .slides:hover::after {
   opacity: 1;
+}
+
+/* Ensure help overlay and other reveal.js UI elements are visible */
+.reveal .overlay {
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  z-index: 9999 !important;
+}
+
+.reveal .overlay .viewport {
+  background: transparent !important;
+}
+
+.reveal .overlay header {
+  color: white !important;
+}
+
+.reveal .overlay .commands {
+  color: white !important;
+}
+
+.reveal .overlay .commands kbd {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+}
+
+/* Make sure pause screen is visible */
+.reveal .pause-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  z-index: 9999 !important;
 }

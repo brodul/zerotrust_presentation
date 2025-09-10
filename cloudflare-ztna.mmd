@@ -1,5 +1,5 @@
 graph LR
-    A[User Browser] --> B[Cloudflare Access Gateway]
+    A[User Browser] --> B[Cloudflare Access]
     B --> C{Authenticated?}
     C -->|No| D[Identity Provider<br/>SSO/OAuth]
     D --> E[User Login]
