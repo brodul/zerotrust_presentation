@@ -87,7 +87,7 @@ jobs:
 - Token duration: configurable from minutes to hours
 
 ---
-<!-- .slide: data-background="aws_sts_diagram.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/aws_sts_diagram.png" data-background-size="contain" -->
 
 Notes:
 - You provide some proof who you are (SAML, OIDC ...) optionally which access you need
@@ -108,7 +108,7 @@ OpenID Connect (OIDC) Token Exchange
 
 ---
 
-<!-- .slide: data-background="oidc-flow.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/oidc-flow.png" data-background-size="contain" -->
 
 ---
 
@@ -217,32 +217,32 @@ jobs:
 
 ---
 
-<!-- .slide: data-background="cf.svg" data-background-size="contain" -->
+<!-- .slide: data-background="img/cf.svg" data-background-size="contain" -->
 
 ---
 
-<!-- .slide: data-background="cloudflare-ztna.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/cloudflare-ztna.png" data-background-size="contain" -->
 
 ---
 
 
-<!-- .slide: data-background="cloudflare-ztna-otp.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/cloudflare-ztna-otp.png" data-background-size="contain" -->
 
 ---
 
-<!-- .slide: data-background="tunnels.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/tunnels.png" data-background-size="contain" -->
 
 ---
 
-<!-- .slide: data-background="hostnames.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/hostnames.png" data-background-size="contain" -->
 
 ---
 
-<!-- .slide: data-background="app1.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/app1.png" data-background-size="contain" -->
 
 ---
 
-<!-- .slide: data-background="app2.png" data-background-size="contain" -->
+<!-- .slide: data-background="img/app2.png" data-background-size="contain" -->
 
 ---
 

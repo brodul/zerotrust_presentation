@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "reveal-md zero_trust_aws_slides.md --static dist --css theme.css --static-dirs=.",
+    "build": "reveal-md zero_trust_aws_slides.md --static dist --css theme.css --static-dirs=img",
     "serve": "reveal-md zero_trust_aws_slides.md --watch --css theme.css",
-    "render-diagram": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium || which google-chrome) mmdc -i diagram.mmd -o oidc-flow.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna.mmd -o cloudflare-ztna.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna-otp.mmd -o cloudflare-ztna-otp.png -w 1920 -H 1080 -b white -s 2 && mmdc -i aws_sts_diagram.mmd -o aws_sts_diagram.png -w 1920 -H 1080 -b white -s 2",
-    "render-diagram-win": "mmdc -i diagram.mmd -o oidc-flow.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna.mmd -o cloudflare-ztna.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna-otp.mmd -o cloudflare-ztna-otp.png -w 1920 -H 1080 -b white -s 2 && mmdc -i aws_sts_diagram.mmd -o aws_sts_diagram.png -w 1920 -H 1080 -b white -s 2",
+    "render-diagram": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium || which google-chrome) mmdc -i diagram.mmd -o img/oidc-flow.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna.mmd -o img/cloudflare-ztna.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna-otp.mmd -o img/cloudflare-ztna-otp.png -w 1920 -H 1080 -b white -s 2 && mmdc -i aws_sts_diagram.mmd -o img/aws_sts_diagram.png -w 1920 -H 1080 -b white -s 2",
+    "render-diagram-win": "mmdc -i diagram.mmd -o img/oidc-flow.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna.mmd -o img/cloudflare-ztna.png -w 1920 -H 1080 -b white -s 2 && mmdc -i cloudflare-ztna-otp.mmd -o img/cloudflare-ztna-otp.png -w 1920 -H 1080 -b white -s 2 && mmdc -i aws_sts_diagram.mmd -o img/aws_sts_diagram.png -w 1920 -H 1080 -b white -s 2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
