@@ -31,15 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build slides
-        run: npx reveal-md zero_trust_aws_slides.md --static dist --css theme.css
+      - name: Generate diagrams
+        run: npm run render-diagram
 
-      - name: Debug - List dist folder contents
-        run: |
-          echo "Checking if dist folder exists and its contents:"
-          ls -la dist/
-          echo "Checking for index.html:"
-          ls -la dist/index.html || echo "index.html not found"
+      - name: Build slides
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
