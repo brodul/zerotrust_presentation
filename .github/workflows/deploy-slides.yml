@@ -31,9 +31,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate diagrams
-        run: npm run render-diagram
-
       - name: Build slides
         run: npm run build
 
